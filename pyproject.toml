@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hallo2"
+version = "0.1.0"
+description = "Hallo2: Long-Duration and High-Resolution Audio-Driven Portrait Image Animation"
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.0",
+    "torchvision",
+    "diffusers==0.32.2",
+    "transformers==4.39.2",
+    "omegaconf>=2.3",
+    "numpy==1.26.4",
+    "opencv-python",
+    "einops",
+    "tqdm",
+    "librosa",
+    "Pillow",
+    "av",
+    "mediapipe",
+    "insightface",
+    "pydub",
+    "audio-separator",
+    "moviepy==1.0.3",
+    "accelerate",
+]
+
+[project.scripts]
+generate-hallo2 = "generate_hallo2:main"
+
+[tool.setuptools]
+py-modules = ["generate_hallo2"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["hallo*"]
