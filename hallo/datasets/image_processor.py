@@ -52,6 +52,7 @@ class ImageProcessor:
     """
     def __init__(self, img_size, face_analysis_model_path) -> None:
         self.img_size = img_size
+        self.face_analysis_model_path = face_analysis_model_path
 
         self.pixel_transform = transforms.Compose(
             [
@@ -138,7 +139,10 @@ class ImageProcessor:
         face_emb = face["embedding"]
 
         # 2.3 render face mask
-        get_mask(source_image_path, cache_dir, face_region_ratio)
+        get_mask(source_image_path, cache_dir, face_region_ratio,
+                 face_landmarker_model_path=os.path.join(
+                     self.face_analysis_model_path, "models",
+                     "face_landmarker_v2_with_blendshapes.task"))
         file_name = os.path.basename(source_image_path).split(".")[0]
         face_mask_pil = Image.open(
             os.path.join(cache_dir, f"{file_name}_face_mask.png")).convert("RGB")

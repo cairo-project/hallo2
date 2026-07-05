@@ -394,24 +394,31 @@ def compute_face_landmarks(detection_result, h, w):
     return [[p.x * w, p.y * h] for p in face_landmarks_list[0]]
 
 
-def get_landmark(file):
+def get_landmark(file, face_landmarker_model_path=None):
     """
     This function takes a file as input and returns the facial landmarks detected in the file.
 
     Args:
         file (str): The path to the file containing the video or image to be processed.
+        face_landmarker_model_path (str, optional): Path to the mediapipe face_landmarker task file.
+            Defaults to face_landmarker_v2_with_blendshapes.task next to this module.
 
     Returns:
         Tuple[List[float], List[float]]: A tuple containing two lists of floats representing the x and y coordinates of the facial landmarks.
     """
-    model_path = "pretrained_models/face_analysis/models/face_landmarker_v2_with_blendshapes.task"
+    if face_landmarker_model_path is None:
+        face_landmarker_model_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "..", "pretrained_models", "face_analysis", "models",
+            "face_landmarker_v2_with_blendshapes.task",
+        )
     BaseOptions = mp.tasks.BaseOptions
     FaceLandmarker = mp.tasks.vision.FaceLandmarker
     FaceLandmarkerOptions = mp.tasks.vision.FaceLandmarkerOptions
     VisionRunningMode = mp.tasks.vision.RunningMode
     # Create a face landmarker instance with the video mode:
     options = FaceLandmarkerOptions(
-        base_options=BaseOptions(model_asset_path=model_path),
+        base_options=BaseOptions(model_asset_path=face_landmarker_model_path),
         running_mode=VisionRunningMode.IMAGE,
     )
 
@@ -540,18 +547,19 @@ def get_union_face_mask(landmarks, height, width, expand_ratio=1):
     union_mask = get_union_mask(face_masks)
     return union_mask
 
-def get_mask(file, cache_dir, face_expand_raio):
+def get_mask(file, cache_dir, face_expand_raio, face_landmarker_model_path=None):
     """
     Generate a face mask based on the given landmarks and save it to the specified cache directory.
 
     Args:
         file (str): The path to the file containing the landmarks.
         cache_dir (str): The directory to save the generated face mask.
+        face_landmarker_model_path (str, optional): Path to the mediapipe face_landmarker task file.
 
     Returns:
         None
     """
-    landmarks, height, width = get_landmark(file)
+    landmarks, height, width = get_landmark(file, face_landmarker_model_path=face_landmarker_model_path)
     file_name = os.path.basename(file).split(".")[0]
     get_lip_mask(landmarks, height, width, os.path.join(
         cache_dir, f"{file_name}_lip_mask.png"))
