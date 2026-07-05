@@ -36,4 +36,7 @@ py-modules = ["generate_hallo2"]
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["hallo*"]
+include = ["hallo*", "configs*"]
+
+[tool.setuptools.package-data]
+configs = ["**/*.yaml"]

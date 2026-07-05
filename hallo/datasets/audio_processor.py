@@ -49,7 +49,7 @@ class AudioProcessor:
         self.fps = fps
         self.device = device
 
-        self.audio_encoder = Wav2VecModel.from_pretrained(wav2vec_model_path, local_files_only=True).to(device=device)
+        self.audio_encoder = Wav2VecModel.from_pretrained(wav2vec_model_path, local_files_only=True, attn_implementation="eager").to(device=device)
         self.audio_encoder.feature_extractor._freeze_parameters()
         self.only_last_features = only_last_features
 
